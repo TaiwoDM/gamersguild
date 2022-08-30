@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
   fullname: {
@@ -61,6 +62,17 @@ userSchema.index(
     unique: true,
   }
 );
+
+// pre-save doc mddwr
+userSchema.pre('save', async function (next) {
+  // encrypt and save pword in db
+  this.password = await bcrypt.hash(this.password, 12);
+
+  // don't save confirmPword
+  this.confirmPassword = undefined;
+
+  next();
+});
 
 const User = mongoose.model('User', userSchema);
 
