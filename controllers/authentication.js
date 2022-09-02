@@ -25,6 +25,13 @@ const signup = async (req, res, next) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
+    // send token as jwt
+    res.cookie('jwt', token, {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRATION * 24 * 60 * 60 * 1000
+      ),
+    });
+
     // hide password from response
     user.password = undefined;
 
@@ -112,6 +119,13 @@ const login = async (req, res, next) => {
     // sign jwt
     const token = jwt.sign({ id: user._id }, process.env.JWT_PRIVATE_KEY, {
       expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    // send token as jwt
+    res.cookie('jwt', token, {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRATION * 24 * 60 * 60 * 1000
+      ),
     });
 
     // hide password
