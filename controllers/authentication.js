@@ -121,7 +121,7 @@ const login = async (req, res, next) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
-    // send token as jwt
+    // send token as jwt -- not httpsOnly yet
     res.cookie('jwt', token, {
       expires: new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRATION * 24 * 60 * 60 * 1000
