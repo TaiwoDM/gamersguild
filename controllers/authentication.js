@@ -25,11 +25,13 @@ const signup = async (req, res, next) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
+    // hide password from response
+    user.password = undefined;
+
     res.status(201).json({
       status: 'success',
       data: {
         user,
-        token,
       },
     });
   } catch (err) {
@@ -87,4 +89,46 @@ const secure = async (req, res, next) => {
   }
 };
 
-export { signup, secure };
+const login = async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        status: 'failed',
+        message: 'input both username and password',
+      });
+    }
+
+    const user = await User.findOne({ username }).select('+password');
+
+    if (!user || !user.passwordCorrect(password, user.password)) {
+      return res.status(401).json({
+        status: 'failed',
+        message: 'Incorrect username or password',
+      });
+    }
+
+    // sign jwt
+    const token = jwt.sign({ id: user._id }, process.env.JWT_PRIVATE_KEY, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    // hide password
+    user.password = undefined;
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+        token,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+export { signup, secure, login };
