@@ -1,7 +1,9 @@
 import User from '../models/User.js';
 
+import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 
+// register user
 const signup = async (req, res, next) => {
   try {
     const fullname = req.body.fullname;
@@ -31,11 +33,58 @@ const signup = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(200).json({
-      status: 'fail',
+    res.status(500).json({
+      status: 'error',
       err: err.message,
     });
   }
 };
 
-export { signup };
+// secure routes (actions)
+const secure = async (req, res, next) => {
+  try {
+    let token;
+
+    // check if token is available in header
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      res.status(401).json({
+        status: 'failed',
+        message: 'You are not logged in, please login to perform this action.',
+      });
+    }
+
+    // verify token
+    const decoded = await promisify(jwt.verify)(
+      token,
+      process.env.JWT_PRIVATE_KEY
+    );
+
+    // check if token user still exists
+    const tokenUser = await User.findById(decoded.id);
+
+    if (!tokenUser) {
+      res.status(401).json({
+        status: 'failed',
+        message: 'the user of this token does not exist',
+      });
+    }
+
+    // grant access
+    req.user = tokenUser;
+    next();
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+export { signup, secure };
