@@ -7,7 +7,10 @@ const articleSchema = new mongoose.Schema({
     minlength: 2,
   },
 
-  // author
+  author: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
 
   publishedDate: {
     type: Date,

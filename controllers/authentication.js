@@ -35,14 +35,14 @@ const signup = async (req, res, next) => {
     // hide password from response
     user.password = undefined;
 
-    res.status(201).json({
+    return res.status(201).json({
       status: 'success',
       data: {
         user,
       },
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       err: err.message,
     });
@@ -63,7 +63,7 @@ const secure = async (req, res, next) => {
     }
 
     if (!token) {
-      res.status(401).json({
+      return res.status(401).json({
         status: 'failed',
         message: 'You are not logged in, please login to perform this action.',
       });
@@ -79,7 +79,7 @@ const secure = async (req, res, next) => {
     const tokenUser = await User.findById(decoded.id);
 
     if (!tokenUser) {
-      res.status(401).json({
+      return res.status(401).json({
         status: 'failed',
         message: 'the user of this token does not exist',
       });
@@ -89,7 +89,7 @@ const secure = async (req, res, next) => {
     req.user = tokenUser;
     next();
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: err.message,
     });
@@ -131,7 +131,7 @@ const login = async (req, res, next) => {
     // hide password
     user.password = undefined;
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       data: {
         user,
@@ -139,7 +139,7 @@ const login = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(500).json({
+    return res.status(500).json({
       status: 'error',
       message: err.message,
     });

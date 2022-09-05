@@ -42,17 +42,6 @@ const userSchema = new mongoose.Schema({
     minLength: 8,
     select: false,
   },
-
-  confirmPassword: {
-    type: String,
-    required: [true, 'Please Confirm password.'],
-    validate: {
-      validator: function (cPassword) {
-        return cPassword === this.password;
-      },
-      message: 'Provided passwords are not the same.',
-    },
-  },
 });
 
 // pre-save doc mddwr

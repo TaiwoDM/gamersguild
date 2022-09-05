@@ -2,6 +2,9 @@ import Article from '../models/Article.js';
 
 const createArticle = async (req, res, next) => {
   try {
+    // add logged in user id to the req body
+    req.body.author = req.user.id;
+
     const article = await Article.create(req.body);
 
     res.status(201).json({
@@ -11,7 +14,7 @@ const createArticle = async (req, res, next) => {
       },
     });
   } catch (err) {
-    res.status(400).json({
+    return res.status(400).json({
       status: 'fail',
       message: err.message,
     });
