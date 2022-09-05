@@ -55,17 +55,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// compound unique indexing
-// userSchema.index(
-//   {
-//     email: 1,
-//     username: 1,
-//   },
-//   {
-//     unique: true,
-//   }
-// );
-
 // pre-save doc mddwr
 userSchema.pre('save', async function (next) {
   // encrypt and save pword in db
