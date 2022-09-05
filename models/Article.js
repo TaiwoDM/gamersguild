@@ -45,6 +45,15 @@ const articleSchema = new mongoose.Schema({
   // likes
 });
 
+// query middleware to populate author
+articleSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'author',
+    select: 'fullname',
+  });
+  next();
+});
+
 const Article = mongoose.model('Article', articleSchema);
 
 export default Article;

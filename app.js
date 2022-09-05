@@ -4,11 +4,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 import express from 'express';
+import cors from 'cors';
 
 import articleRouter from './routes/articles.js';
 import usersRouter from './routes/users.js';
 
 const app = express();
+
+app.use(cors());
 
 // parse body
 app.use(express.json());
