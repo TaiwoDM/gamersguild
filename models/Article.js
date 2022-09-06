@@ -49,7 +49,7 @@ const articleSchema = new mongoose.Schema({
 articleSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'author',
-    select: 'fullname',
+    select: 'username',
   });
   next();
 });
