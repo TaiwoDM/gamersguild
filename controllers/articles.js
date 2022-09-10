@@ -71,6 +71,7 @@ const publishArticle = async (req, res, next) => {
     }
 
     article.published = true;
+    article.publishedDate = Date.now();
     await article.save();
 
     return res.status(200).json({
