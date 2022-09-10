@@ -23,7 +23,7 @@ const createArticle = async (req, res, next) => {
 
 const getAllArticles = async (req, res, next) => {
   try {
-    const articles = await Article.find();
+    const articles = await Article.find({ published: { $ne: false } });
 
     // JSend
     res.status(200).json({
@@ -40,4 +40,26 @@ const getAllArticles = async (req, res, next) => {
   }
 };
 
-export { createArticle, getAllArticles };
+const getArticle = async (req, res, next) => {
+  try {
+    const article = await Article.findById(req.params.id)
+      .where('published')
+      .ne(false);
+    // JSend
+    res.status(200).json({
+      status: 'success',
+      data: {
+        article,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message,
+    });
+  }
+};
+
+const publishArticle = (req, res, next) => {};
+
+export { createArticle, getAllArticles, getArticle };

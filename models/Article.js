@@ -14,7 +14,7 @@ const articleSchema = new mongoose.Schema({
 
   publishedDate: {
     type: Date,
-    default: Date.now(),
+    // default: Date.now(),
   },
 
   thumbnail: String,
@@ -44,6 +44,10 @@ const articleSchema = new mongoose.Schema({
 
   // likes
 });
+
+// articleSchema.pre(/^find/, function (next) {
+//   this.find
+// })
 
 // query middleware to populate author
 articleSchema.pre(/^find/, function (next) {
