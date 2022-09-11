@@ -47,7 +47,10 @@ const getArticle = async (req, res, next) => {
     const article = await Article.findById(req.params.id)
       .where('published')
       .ne(false)
-      .populate({ path: 'author', select: 'profilePicture socialLinks' });
+      .populate({
+        path: 'author',
+        select: 'profilePicture socialLinks username fullname',
+      });
     return res.status(200).json({
       status: 'success',
       data: {
