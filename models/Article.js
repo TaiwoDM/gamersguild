@@ -50,13 +50,13 @@ const articleSchema = new mongoose.Schema({
 // })
 
 // query middleware to populate author
-articleSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'author',
-    select: 'username',
-  });
-  next();
-});
+// articleSchema.pre(/^find/, function (next) {
+//   this.populate({
+//     path: 'author',
+//     select: 'username',
+//   });
+//   next();
+// });
 
 const Article = mongoose.model('Article', articleSchema);
 

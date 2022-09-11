@@ -23,7 +23,9 @@ const createArticle = async (req, res, next) => {
 
 const getAllArticles = async (req, res, next) => {
   try {
-    const articles = await Article.find({ published: { $ne: false } });
+    const articles = await Article.find({ published: { $ne: false } }).populate(
+      { path: 'author', select: 'username profilePicture' }
+    );
 
     // JSend
     return res.status(200).json({
@@ -44,7 +46,8 @@ const getArticle = async (req, res, next) => {
   try {
     const article = await Article.findById(req.params.id)
       .where('published')
-      .ne(false);
+      .ne(false)
+      .populate({ path: 'author', select: 'profilePicture socialLinks' });
     return res.status(200).json({
       status: 'success',
       data: {
