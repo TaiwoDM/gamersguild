@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 
+import reqBodyFilter from '../utils/reqBodyFilter.js';
+
 const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find();
@@ -34,4 +36,37 @@ const getMe = async (req, res, next) => {
   }
 };
 
-export { getMe, getAllUsers };
+const updateMe = async (req, res, next) => {
+  try {
+    if (req.body.password) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'This is no the endpoint for password update.',
+      });
+    }
+
+    const filteredBody = reqBodyFilter(
+      req.body,
+      'fullname',
+      'email',
+      'username'
+    );
+
+    const updatedMe = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: { user: updatedMe },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+export { getMe, getAllUsers, updateMe };
