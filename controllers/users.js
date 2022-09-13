@@ -41,7 +41,7 @@ const updateMe = async (req, res, next) => {
     if (req.body.password) {
       return res.status(400).json({
         status: 'error',
-        message: 'This is no the endpoint for password update.',
+        message: 'This is not the endpoint for password update.',
       });
     }
 
@@ -49,7 +49,9 @@ const updateMe = async (req, res, next) => {
       req.body,
       'fullname',
       'email',
-      'username'
+      'username',
+      'socialLinks',
+      'bio'
     );
 
     const updatedMe = await User.findByIdAndUpdate(req.user.id, filteredBody, {

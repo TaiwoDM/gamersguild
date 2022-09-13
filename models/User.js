@@ -52,9 +52,6 @@ userSchema.pre('save', async function (next) {
   // encrypt and save pword in db
   this.password = await bcrypt.hash(this.password, 12);
 
-  // don't save confirmPword
-  this.confirmPassword = undefined;
-
   next();
 });
 
