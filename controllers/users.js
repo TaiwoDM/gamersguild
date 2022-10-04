@@ -54,14 +54,14 @@ const updateMe = async (req, res, next) => {
       'bio'
     );
 
-    const updatedMe = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+    const user = await User.findByIdAndUpdate(req.user.id, filteredBody, {
       new: true,
       runValidators: true,
     });
 
     res.status(200).json({
       status: 'success',
-      data: { user: updatedMe },
+      data: { user },
     });
   } catch (err) {
     res.status(500).json({
