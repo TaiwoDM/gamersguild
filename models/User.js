@@ -33,8 +33,11 @@ const userSchema = new mongoose.Schema({
   // articles
 
   socialLinks: {
-    type: [String],
-    // validate: [validator.isURL, 'Provide valid links.'],/
+    type: new mongoose.Schema(
+      { twitter: String, instagram: String, facebook: String },
+      { _id: false }
+    ),
+    default: { twitter: '', instagram: '', facebook: '' },
   },
 
   // bookmarks
