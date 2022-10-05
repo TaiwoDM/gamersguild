@@ -109,7 +109,7 @@ const login = async (req, res, next) => {
 
     const user = await User.findOne({ username }).select('+password');
 
-    if (!user || !user.passwordCorrect(password, user.password)) {
+    if (!user || !(await user.passwordCorrect(password, user.password))) {
       return res.status(401).json({
         status: 'failed',
         message: 'Incorrect username or password',
@@ -135,7 +135,6 @@ const login = async (req, res, next) => {
       status: 'success',
       data: {
         user,
-        token,
       },
     });
   } catch (err) {
@@ -145,4 +144,55 @@ const login = async (req, res, next) => {
     });
   }
 };
-export { signup, secure, login };
+
+const updatePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'currentPassword or newPassword cannot be empty',
+      });
+    }
+
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!(await user.passwordCorrect(currentPassword, user.password))) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'incorrect current password',
+      });
+    }
+    console.log('1');
+    user.password = newPassword;
+    await user.save();
+    console.log('1');
+
+    // sign and send token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_PRIVATE_KEY, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    res.cookie('jwt', token, {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRATION * 24 * 60 * 60 * 1000
+      ),
+    });
+
+    user.password = undefined;
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    return res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+export { signup, secure, login, updatePassword };
