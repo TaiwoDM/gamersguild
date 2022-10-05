@@ -33,11 +33,8 @@ const userSchema = new mongoose.Schema({
   // articles
 
   socialLinks: {
-    type: new mongoose.Schema(
-      { twitter: String, instagram: String, facebook: String },
-      { _id: false }
-    ),
-    default: { twitter: '', instagram: '', facebook: '' },
+    type: [{ twitter: String }, { facebook: String }, { instagram: String }],
+    default: [{ twitter: '' }, { instagram: '' }, { facebook: '' }],
   },
 
   // bookmarks
